@@ -2,7 +2,8 @@ module Payday
   # Configuration for Payday. This is a singleton, so to set the company_name you would call
   # Payday::Config.default.company_name = "Awesome Corp".
   class Config
-    attr_accessor :invoice_logo, :company_name, :company_details, :date_format, :currency
+    attr_accessor :invoice_logo, :company_name, :company_details, :date_format, :currency,
+      :font_families, :font_size
 
     # Sets the page size to use. See the
     # {http://prawn.majesticseacreature.com/docs/0.10.2/Prawn/Document/PageGeometry.html Prawn documentation} for valid
@@ -25,6 +26,12 @@ module Payday
       self.date_format = "%B %e, %Y"
       self.currency = "USD"
       self.page_size = "LETTER"
+      self.font_families = {}
+      self.font_size = 8
+    end
+
+    def font
+      font_families.keys.first || "Helvetica"
     end
 
     # Internal: Contruct a new config object.

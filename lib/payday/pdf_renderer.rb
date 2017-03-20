@@ -18,7 +18,9 @@ module Payday
       pdf = Prawn::Document.new(page_size: invoice_or_default(invoice, :page_size))
 
       # set up some default styling
-      pdf.font_size(8)
+      pdf.font_families.update(Payday::Config.default.font_families)
+      pdf.font_size(invoice_or_default(invoice, :font_size))
+      pdf.font(invoice_or_default(invoice, :font))
 
       stamp(invoice, pdf)
       company_banner(invoice, pdf)
@@ -45,7 +47,7 @@ module Payday
 
       if stamp
         pdf.bounding_box([150, pdf.cursor - 50], width: pdf.bounds.width - 300) do
-          pdf.font("Helvetica-Bold") do
+          pdf.font(invoice_or_default(invoice, :font), style: :bold) do
             pdf.fill_color "cc0000"
             pdf.text stamp, align: :center, size: 25, rotate: 15
           end
@@ -265,7 +267,7 @@ module Payday
     def self.notes(invoice, pdf)
       if defined?(invoice.notes) && invoice.notes
         pdf.move_cursor_to(pdf.cursor - 30)
-        pdf.font("Helvetica-Bold") do
+        pdf.font(invoice_or_default(invoice, :font), style: :bold) do
           pdf.text(I18n.t("payday.invoice.notes", default: "Notes"))
         end
         pdf.line_width = 0.5
